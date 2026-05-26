@@ -18,5 +18,5 @@ A high-end, full-stack web application built to provide a seamless hotel booking
 ## How to Run Locally
 1. **Clone the repository:**
    ```bash
-   git clone [your-repo-link]
+   git clone 
    cd niwas
