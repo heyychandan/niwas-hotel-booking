@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="padding: 120px 60px;">
+    <h1 class="section-title">Admin <span>Dashboard</span></h1>
+    <div style="background: var(--dark2); padding: 20px; border: 1px solid #333; overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; color: white;">
+            <thead><tr style="color: var(--amber); border-bottom: 1px solid #333;">
+                <th style="padding: 15px;">Guest</th><th>Room</th><th>Dates</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+            {% for b in bookings %}
+            <tr style="border-bottom: 1px solid #222;">
+                <td style="padding: 15px;">{{ b['guest_name'] }}</td>
+                <td>{{ b['room_name'] }}</td>
+                <td>{{ b['check_in'] }} to {{ b['check_out'] }}</td>
+                <td>{{ b['status'] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

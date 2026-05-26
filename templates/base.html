@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Niwas{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --amber: #f59e0b;
+      --amber-light: #fbbf24;
+      --amber-dark: #d97706;
+      --black: #0a0a0a;
+      --dark: #111111;
+      --dark2: #1a1a1a;
+      --dark3: #222222;
+      --white: #ffffff;
+      --gray: #888888;
+      --light-gray: #cccccc;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 20px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.4s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 14px 60px;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--amber);
+      letter-spacing: 3px;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px; 
+      list-style: none;
+      white-space: nowrap; 
+    }
+
+    .nav-links a {
+      color: var(--light-gray);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--amber);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--amber); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-btn {
+      background: var(--amber);
+      color: var(--black) !important;
+      padding: 10px 24px;
+      border-radius: 2px;
+      font-weight: 600 !important;
+      transition: all 0.3s !important;
+      margin-left: 10px;
+    }
+
+    .nav-btn:hover {
+      background: var(--amber-light) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+    }
+
+    .nav-btn::after { display: none !important; }
+
+    /* FOOTER */
+    footer { background: var(--dark); border-top: 1px solid rgba(245, 158, 11, 0.2); padding: 60px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 36px; color: var(--amber); letter-spacing: 3px; margin-bottom: 16px; }
+    .footer-desc { color: var(--gray); font-size: 14px; line-height: 1.8; max-width: 300px; }
+    .footer-title { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--amber); margin-bottom: 20px; font-weight: 600; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: var(--gray); text-decoration: none; font-size: 14px; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--amber); }
+    .footer-bottom { background: var(--dark); border-top: 1px solid #222; padding: 20px 60px; text-align: center; color: var(--gray); font-size: 13px; }
+    
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .btn-amber { display: inline-block; background: var(--amber); color: var(--black); padding: 14px 36px; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: none; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden; }
+    .btn-amber:hover { background: var(--amber-light); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(245, 158, 11, 0.4); }
+    .btn-outline { display: inline-block; background: transparent; color: var(--amber); padding: 14px 36px; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; border-radius: 2px; border: 1px solid var(--amber); cursor: pointer; transition: all 0.3s; }
+    .btn-outline:hover { background: var(--amber); color: var(--black); transform: translateY(-3px); }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="/" class="logo">NIWAS</a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="/rooms">Rooms</a></li>
+    {% if session.user_name %}
+      <li><a href="/profile">{{ session.user_name }}</a></li>
+      {% if session.is_admin %}
+        <li><a href="/admin">Admin</a></li>
+      {% endif %}
+      <li><a href="/logout">Logout</a></li>
+    {% else %}
+      <li><a href="/login">Login</a></li>
+      <li><a href="/register" class="nav-btn">Book Now</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% block content %}{% endblock %}
+
+<footer>
+  <div>
+    <div class="footer-logo">NIWAS</div>
+    <p class="footer-desc">Experience the pinnacle of luxury hospitality. Where every stay becomes an unforgettable memory crafted just for you.</p>
+  </div>
+  <div>
+    <div class="footer-title">Quick Links</div>
+    <ul class="footer-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/rooms">Our Rooms</a></li>
+      <li><a href="/login">Login</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-title">Contact</div>
+    <ul class="footer-links">
+      <li><a href="mailto:chandansingh87911@gmail.com">chandansingh87911@gmail.com</a></li>
+      <li><a href="tel:+919876543210">+91 7209283721</a></li>
+      <li><a href="#">Patna, India</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  © 2026 Niwas. All rights reserved. Crafted with excellence.
+</div>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

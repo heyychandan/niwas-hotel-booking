@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Login — Niwas{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container { 
+        padding: 150px 60px; 
+        max-width: 450px; 
+        margin: 0 auto; 
+    }
+    .auth-card { 
+        background: var(--dark2); 
+        padding: 40px; 
+        border: 1px solid #222; 
+        border-radius: 4px; 
+    }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; color: var(--gray); font-size: 12px; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+    input { width: 100%; background: #000; border: 1px solid #333; padding: 12px; color: var(--white); border-radius: 2px; }
+    input:focus { border-color: var(--amber); outline: none; }
+    .error { color: #ef4444; font-size: 12px; margin-bottom: 10px; text-align: center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="section-title" style="font-size: 32px; margin-bottom: 30px;">Welcome <span>Back</span></h2>
+        
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit" class="btn-amber" style="width: 100%; text-align: center; margin-top: 10px;">Login</button>
+        </form>
+        
+        <p style="margin-top: 20px; color: var(--gray); font-size: 13px; text-align: center;">
+            Don't have an account? <a href="/register" style="color: var(--amber);">Register here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

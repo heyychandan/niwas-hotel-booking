@@ -1,0 +1,684 @@
+{% extends "base.html" %}
+{% block title %}Niwas — Luxury Redefined{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1920') center/cover no-repeat;
+    transform: scale(1.1);
+    animation: zoomOut 8s ease forwards;
+  }
+
+  @keyframes zoomOut {
+    from { transform: scale(1.1); }
+    to { transform: scale(1); }
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    z-index: 2;
+    padding: 0 20px;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid rgba(245,158,11,0.4);
+    padding: 8px 20px;
+    margin-bottom: 30px;
+    animation: fadeDown 1s ease 0.3s both;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--white);
+    animation: fadeDown 1s ease 0.6s both;
+  }
+
+  .hero-title span { color: var(--amber); font-style: italic; }
+
+  .hero-subtitle {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    margin: 24px 0 40px;
+    letter-spacing: 1px;
+    animation: fadeDown 1s ease 0.9s both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    animation: fadeDown 1s ease 1.2s both;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: bounce 2s infinite;
+    z-index: 2;
+  }
+
+  .scroll-indicator span {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--amber), transparent);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(10px); }
+  }
+
+  /* STATS */
+  .stats {
+    background: var(--dark2);
+    border-top: 1px solid rgba(245,158,11,0.2);
+    border-bottom: 1px solid rgba(245,158,11,0.2);
+    padding: 50px 60px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 20px;
+    border-right: 1px solid #222;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--amber);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-top: 8px;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 100px 60px;
+  }
+
+  .section-tag {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .section-title span { color: var(--amber); font-style: italic; }
+
+  .section-subtitle {
+    color: var(--gray);
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 500px;
+  }
+
+  /* ROOMS GRID */
+  .rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .room-card {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--dark2);
+    border: 1px solid #222;
+    transition: all 0.4s ease;
+    cursor: pointer;
+  }
+
+  .room-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(245,158,11,0.4);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(245,158,11,0.1);
+  }
+
+  .room-img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .room-card:hover .room-img { transform: scale(1.05); }
+
+  .room-badge {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--amber);
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  .room-info { padding: 24px; }
+
+  .room-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .room-desc {
+    color: var(--gray);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .room-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .amenity-tag {
+    font-size: 11px;
+    color: var(--amber);
+    border: 1px solid rgba(245,158,11,0.3);
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  .room-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #333;
+  }
+
+  .room-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    color: var(--amber);
+    font-weight: 700;
+  }
+
+  .room-price span {
+    font-size: 13px;
+    color: var(--gray);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  /* EXPERIENCE SECTION */
+  .experience {
+    background: var(--dark2);
+    padding: 100px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .experience-img {
+    position: relative;
+  }
+
+  .experience-img img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .experience-img::before {
+    content: '';
+    position: absolute;
+    top: -20px; left: -20px;
+    right: 20px; bottom: 20px;
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 4px;
+    z-index: -1;
+  }
+
+  .experience-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .feature-item {
+    padding: 24px;
+    background: var(--dark3);
+    border: 1px solid #333;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+
+  .feature-item:hover {
+    border-color: rgba(245,158,11,0.4);
+    transform: translateY(-4px);
+  }
+
+  .feature-icon {
+    font-size: 24px;
+    color: var(--amber);
+    margin-bottom: 12px;
+  }
+
+  .feature-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .feature-desc {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  /* TESTIMONIALS */
+  .testimonials {
+    padding: 100px 60px;
+    text-align: center;
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .testimonial-card {
+    background: var(--dark2);
+    border: 1px solid #222;
+    border-radius: 4px;
+    padding: 32px;
+    text-align: left;
+    transition: all 0.3s;
+  }
+
+  .testimonial-card:hover {
+    border-color: rgba(245,158,11,0.3);
+    transform: translateY(-6px);
+  }
+
+  .stars { color: var(--amber); margin-bottom: 16px; font-size: 14px; }
+
+  .testimonial-text {
+    color: var(--light-gray);
+    font-size: 14px;
+    line-height: 1.8;
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .author-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--amber);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--black);
+    font-size: 16px;
+  }
+
+  .author-name { font-size: 14px; font-weight: 600; color: var(--white); }
+  .author-loc { font-size: 12px; color: var(--gray); }
+
+  /* CTA */
+  .cta {
+    position: relative;
+    padding: 120px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    background: url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920') center/cover;
+  }
+
+  .cta-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+  }
+
+  .cta-content { position: relative; z-index: 2; }
+
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .cta-title span { color: var(--amber); font-style: italic; }
+
+  .cta-subtitle {
+    color: rgba(255,255,255,0.7);
+    font-size: 15px;
+    margin-bottom: 40px;
+  }
+
+  .cta-btns { display: flex; gap: 16px; justify-content: center; }
+
+  /* PARTICLES */
+  #particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--amber);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float linear infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.2; }
+    100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div id="particles"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-tag">✦ Welcome to Niwas ✦</div>
+    <h1 class="hero-title">
+      Where Luxury<br>Meets <span>Tradition</span>
+    </h1>
+    <p class="hero-subtitle">An unparalleled experience of comfort, elegance, and world-class hospitality</p>
+    <div class="hero-btns">
+      <a href="/rooms" class="btn-amber">Explore Rooms</a>
+      <a href="/register" class="btn-outline">Book Your Stay</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item reveal">
+    <div class="stat-number" data-target="500">0</div>
+    <div class="stat-label">Happy Guests</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-number" data-target="50">0</div>
+    <div class="stat-label">Luxury Rooms</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-number" data-target="15">0</div>
+    <div class="stat-label">Years of Excellence</div>
+  </div>
+  <div class="stat-item reveal">
+    <div class="stat-number" data-target="98">0</div>
+    <div class="stat-label">Satisfaction Rate %</div>
+  </div>
+</div>
+
+<!-- FEATURED ROOMS -->
+<section class="section">
+  <div class="reveal">
+    <span class="section-tag">✦ Our Accommodations</span>
+    <h2 class="section-title">Curated Rooms &<br><span>Suites</span></h2>
+    <p class="section-subtitle">Each room is a sanctuary of comfort, designed with meticulous attention to detail and adorned with the finest furnishings.</p>
+  </div>
+  <div class="rooms-grid">
+    {% for room in rooms %}
+    <div class="room-card reveal">
+      <img src="{{ room['image_url'] }}" alt="{{ room['name'] }}" class="room-img"/>
+      <div class="room-badge">{{ room['type'] }}</div>
+      <div class="room-info">
+        <div class="room-name">{{ room['name'] }}</div>
+        <div class="room-desc">{{ room['description'] }}</div>
+        <div class="room-amenities">
+          {% for amenity in room['amenities'].split(',')[:3] %}
+          <span class="amenity-tag">{{ amenity }}</span>
+          {% endfor %}
+        </div>
+        <div class="room-footer">
+          <div class="room-price">₹{{ "{:,.0f}".format(room['price']) }}<span>/night</span></div>
+          <a href="/book/{{ room['id'] }}" class="btn-amber" style="padding:10px 20px;font-size:12px;">Book Now</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="text-align:center;margin-top:50px;" class="reveal">
+    <a href="/rooms" class="btn-outline">View All Rooms</a>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience">
+  <div class="experience-img reveal">
+    <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800" alt="Experience"/>
+  </div>
+  <div class="reveal">
+    <span class="section-tag">✦ The Niwas Experience</span>
+    <h2 class="section-title">Crafted for the<br><span>Discerning</span> Traveler</h2>
+    <p class="section-subtitle">From the moment you arrive, every detail is thoughtfully curated to ensure your stay is nothing short of extraordinary.</p>
+    <div class="experience-features">
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-concierge-bell"></i></div>
+        <div class="feature-title">24/7 Concierge</div>
+        <div class="feature-desc">Round the clock personalized service at your fingertips.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-utensils"></i></div>
+        <div class="feature-title">Fine Dining</div>
+        <div class="feature-desc">World-class cuisine crafted by award-winning chefs.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-spa"></i></div>
+        <div class="feature-title">Luxury Spa</div>
+        <div class="feature-desc">Rejuvenate your senses with our exclusive wellness treatments.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="feature-title">Private Security</div>
+        <div class="feature-desc">Discreet and professional security for complete peace of mind.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="reveal">
+    <span class="section-tag">✦ Guest Reviews</span>
+    <h2 class="section-title">What Our <span>Guests</span> Say</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"An absolutely breathtaking experience. The attention to detail was impeccable and the staff made us feel like royalty throughout our stay."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">A</div>
+        <div>
+          <div class="author-name">Arjun Sharma</div>
+          <div class="author-loc">Mumbai, India</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Niwas redefined what luxury means to me. The Royal Suite was beyond anything I had imagined. We will definitely be returning."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">P</div>
+        <div>
+          <div class="author-name">Priya Mehta</div>
+          <div class="author-loc">Delhi, India</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"From the moment we stepped in, we were treated with unparalleled warmth and hospitality. Truly a gem of a property."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">R</div>
+        <div>
+          <div class="author-name">Rohit Verma</div>
+          <div class="author-loc">Bangalore, India</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-bg"></div>
+  <div class="cta-overlay"></div>
+  <div class="cta-content reveal">
+    <h2 class="cta-title">Ready for an<br><span>Unforgettable</span> Stay?</h2>
+    <p class="cta-subtitle">Book your room today and experience the Niwas difference.</p>
+    <div class="cta-btns">
+      <a href="/rooms" class="btn-amber">Browse Rooms</a>
+      <a href="/register" class="btn-outline">Create Account</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Particles
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (Math.random() * 15 + 10) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
+    container.appendChild(p);
+  }
+
+  // Counter animation
+  const counters = document.querySelectorAll('.stat-number');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const target = parseInt(entry.target.dataset.target);
+        let count = 0;
+        const step = target / 60;
+        const timer = setInterval(() => {
+          count += step;
+          if (count >= target) { count = target; clearInterval(timer); }
+          entry.target.textContent = Math.floor(count) + (entry.target.dataset.target == 98 ? '%' : '+');
+        }, 30);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  });
+  counters.forEach(c => counterObserver.observe(c));
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}My Profile — Niwas{% endblock %}
+
+{% block content %}
+<div style="padding: 120px 60px; min-height: 80vh;">
+    <h1 class="section-title">My <span>Profile</span></h1>
+    <div style="background: var(--dark2); padding: 40px; border: 1px solid #333; margin-bottom: 40px;">
+        <h3 style="color: var(--amber); margin-bottom: 20px;">Account Details</h3>
+        <p style="color: var(--white);"><strong>Name:</strong> {{ user['name'] }}</p>
+        <p style="color: var(--white);"><strong>Email:</strong> {{ user['email'] }}</p>
+    </div>
+
+    <h3 style="color: var(--amber); margin-bottom: 20px;">My Bookings</h3>
+    <div style="background: var(--dark2); padding: 20px; border: 1px solid #333;">
+        {% if bookings %}
+            {% for b in bookings %}
+            <div style="padding: 15px; border-bottom: 1px solid #333; color: var(--gray);">
+                {{ b['room_name'] }} | Check-in: {{ b['check_in'] }} | Status: <span style="color: var(--amber);">{{ b['status'] }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: var(--gray);">No active bookings found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
